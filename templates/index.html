@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Market Sim</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 30px;
+        background: #f0f2f5;
+        color: #1c1e21;
+      }
+      .card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 8px;
+      }
+      button {
+        padding: 8px 16px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button.check {
+        background: #25d967;
+      }
+      button.buy {
+        background: #0066cc;
+      }
+      button.sell {
+        background: #d93025;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Market Sim</h1>
+
+    <div class="card">
+      <h2>Portfolio</h2>
+      <p><strong>Available cash:</strong> {{ "%.2f"|format(cash) }} USD</p>
+      <p>
+        <strong>Total portfolio value:</strong> {{
+        "%.2f"|format(total_portfolio_value) }} USD
+      </p>
+
+      <h3>Items in portfolio</h3>
+      {% if portfolio %}
+      <table>
+        <tr>
+          <th>Symbol</th>
+          <th>Quantity</th>
+          <th>Current price</th>
+          <th>Total value</th>
+        </tr>
+        {% for ticker, info in portfolio.items() %}
+        <tr>
+          <td><strong>{{ ticker }}</strong></td>
+          <td>{{ info.shares }}</td>
+          <td>{{ "%.2f"|format(info.current_price) }} USD</td>
+          <td>{{ "%.2f"|format(info.shares * info.current_price) }} USD</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p><em>You don't have any assets.</em></p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>Buy / Sell</h2>
+      <form action="/" method="GET">
+        <input type="text" name="ticker" placeholder="AAPL" value="{{ active_ticker }}" required />
+        <button type="submit" class="check">Check price</button>
+      </form>
+
+      {% if stock_info %}
+      <hr style="margin: 20px 0" />
+      <h3>Asset: {{ stock_info.ticker }}</h3>
+      <p><strong>Name:</strong> {{ stock_info.name }}</p>
+      <p>
+        <strong>Current price:</strong> {{ "%.2f"|format(stock_info.price) }} {{
+        stock_info.currency }}
+      </p>
+
+      <form action="/trade" method="POST" style="margin-top: 15px">
+        <input type="hidden" name="ticker" value="{{ stock_info.ticker }}" />
+        <input type="number" name="amount" min="1" value="1" style="width: 80px" required />
+        <button type="submit" name="action" value="buy" class="buy">Buy</button>
+        <button type="submit" name="action" value="sell" class="sell">Sell</button>
+      </form>
+      {% endif %}
+    </div>
+  </body>
+</html>
