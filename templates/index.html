@@ -1,115 +1,269 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8" http-equiv="refresh" content="10" />
     <title>Market Sim</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 30px;
-        background: #f0f2f5;
-        color: #1c1e21;
+      :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --buy: #10b981;
+        --sell: #ef4444;
+        --bg-main: #f8fafc;
+        --card-bg: #ffffff;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --border-color: #e2e8f0;
       }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --primary: #3b82f6;       
+          --primary-hover: #60a5fa; 
+          --buy: #34d399;       
+          --sell: #f87171;        
+          --bg-main: #0f172a;       
+          --card-bg: #1e292b;       
+          --text-main: #f8fafc;     
+          --text-muted: #94a3b8;    
+          --border-color: #334155;  
+        }
+      }
+      
+      body {
+        font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+        margin: 0;
+        padding: 40px 20px;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+      }
+
+      h1 {
+        margin-bottom: 24px;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-main);
+        text-align: left;
+      }
+
       .card {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        background: var(--card-bg);
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        margin-bottom: 24px;
+        border: 1px solid var(--border-color);
+      }
+
+      .card h2 {
+        margin-top: 0;
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        border-bottom: 2px solid var(--bg-main);
+        padding-bottom: 8px;
+      }
+
+      .portfolio-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
         margin-bottom: 20px;
       }
+
+      .stat-box {
+        background: var(--bg-main);
+        padding: 14px 18px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+      }
+
+      .stat-box span {
+        display: block;
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+
+      .stat-box strong {
+        font-size: 18px;
+        color: var(--text-main);
+      }
+
       input[type="text"],
       input[type="number"] {
-        padding: 8px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-right: 8px;
+        padding: 10px 14px;
+        font-size: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-right: 10px;
+        outline: none;
+        transition: border-color 0.2s;
       }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
       button {
-        padding: 8px 16px;
+        padding: 10px 18px;
+        font-size: 15px;
+        font-weight: 600;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
+        transition: filter 0.2s, transform 0.1s;
       }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
       button.check {
-        background: #25d967;
+        background-color: var(--primary);
       }
+      button.check:hover {
+        background-color: var(--primary-hover);
+      }
+
       button.buy {
-        background: #0066cc;
+        background-color: var(--buy);
       }
+      button.buy:hover {
+        filter: brightness(0.9);
+      }
+
       button.sell {
-        background: #d93025;
+        background-color: var(--sell);
       }
+      button.sell:hover {
+        filter: brightness(0.9);
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
+        margin-top: 12px;
       }
+
       th,
       td {
-        padding: 10px;
+        padding: 12px 14px;
         text-align: left;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      th {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      tr:hover td {
+        background-color: rgba(248, 250, 252, 0.5);
+      }
+
+      .stock-details {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+        font-size: 15px;
+      }
+
+      .empty-portfolio {
+        color: var(--text-muted);
+        font-style: italic;
+        margin: 0;
       }
     </style>
   </head>
   <body>
-    <h1>Market Sim</h1>
+    <div class="container">
+      <h1>Market Sim</h1>
 
-    <div class="card">
-      <h2>Portfolio</h2>
-      <p><strong>Available cash:</strong> {{ "%.2f"|format(cash) }} USD</p>
-      <p>
-        <strong>Total portfolio value:</strong> {{
-        "%.2f"|format(total_portfolio_value) }} USD
-      </p>
+      <div class="card">
+        <h2>Portfolio</h2>
+        <div class="portfolio-stats">
+          <div class="stat-box">
+            <span>Available cash</span>
+            <strong>{{ "%.2f"|format(cash) }} USD</strong>
+          </div>
+          <div class="stat-box">
+            <span>Total value</span>
+            <strong>{{ "%.2f"|format(total_portfolio_value) }} USD</strong>
+          </div>
+        </div>
 
-      <h3>Items in portfolio</h3>
-      {% if portfolio %}
-      <table>
-        <tr>
-          <th>Symbol</th>
-          <th>Quantity</th>
-          <th>Current price</th>
-          <th>Total value</th>
-        </tr>
-        {% for ticker, info in portfolio.items() %}
-        <tr>
-          <td><strong>{{ ticker }}</strong></td>
-          <td>{{ info.shares }}</td>
-          <td>{{ "%.2f"|format(info.current_price) }} USD</td>
-          <td>{{ "%.2f"|format(info.shares * info.current_price) }} USD</td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% else %}
-      <p><em>You don't have any assets.</em></p>
-      {% endif %}
-    </div>
+        <h3>Owned assets</h3>
+        {% if portfolio %}
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Quantity</th>
+              <th>Price per item</th>
+              <th>Total value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in portfolio %}
+            <tr>
+              <td><strong>{{ item.symbol }}</strong></td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ "%.2f"|format(item.current_price) }} USD</td>
+              <td>{{ "%.2f"|format(item.total_item_value) }} USD</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <p class="empty-portfolio">You don't have any assets.</p>
+        {% endif %}
+      </div>
 
-    <div class="card">
-      <h2>Buy / Sell</h2>
-      <form action="/" method="GET">
-        <input type="text" name="ticker" placeholder="AAPL" value="{{ active_ticker }}" required />
-        <button type="submit" class="check">Check price</button>
-      </form>
+      <div class="card">
+        <h2>Check asset</h2>
+        <form action="/" method="GET">
+          <input type="text" name="ticker" placeholder="AAPL" value="{{ active_ticker }}" required />
+          <button type="submit" class="check">Check</button>
+        </form>
+      </div>
 
       {% if stock_info %}
-      <hr style="margin: 20px 0" />
-      <h3>Asset: {{ stock_info.ticker }}</h3>
-      <p><strong>Name:</strong> {{ stock_info.name }}</p>
-      <p>
-        <strong>Current price:</strong> {{ "%.2f"|format(stock_info.price) }} {{
-        stock_info.currency }}
-      </p>
-
-      <form action="/trade" method="POST" style="margin-top: 15px">
-        <input type="hidden" name="ticker" value="{{ stock_info.ticker }}" />
-        <input type="number" name="amount" min="1" value="1" style="width: 80px" required />
-        <button type="submit" name="action" value="buy" class="buy">Buy</button>
-        <button type="submit" name="action" value="sell" class="sell">Sell</button>
-      </form>
+        <div class="card">
+          <h2>Asset</h2>
+          <div class="stock-details">
+            <div><strong>Symbol:</strong> {{ stock_info.ticker }}</div>
+            <div><strong>Name:</strong> {{ stock_info.name }}</div>
+            <div><strong>Current price:</strong> {{ "%.2f"|format(stock_info.price) }} {{ stock_info.currency }}
+              {% if stock_info.currency != "USD" %}
+                ({{ "%.2f"|format(stock_info.price_in_USD) }} USD)
+              {% endif %}
+            </div>
+          </div>
+          
+          <form action="/trade" method="POST" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+            <input type="hidden" name="ticker" value="{{ stock_info.ticker }}" />
+            <input type="hidden" name="name" value="{{ stock_info.name }}" />
+            <input type="number" name="amount" min="1" value="1" style="width: 90px;" required />
+            <button type="submit" name="action" value="buy" class="buy">Buy</button>
+            <button type="submit" name="action" value="sell" class="sell">Sell</button>
+          </form>
+        </div>
       {% endif %}
     </div>
   </body>
