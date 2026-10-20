@@ -189,6 +189,14 @@
         font-style: italic;
         margin: 0;
       }
+      a {
+        text-decoration: none;
+        color: var(--text-main);
+        transition: 0.3s;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -273,6 +281,7 @@
                 ({{ "%.2f"|format(stock_info.price_in_USD) }} USD)
               {% endif %}
             </div>
+            <div><strong><a href="https://finance.yahoo.com/quote/{{stock_info.ticker}}/">Yahoo Finance Charts</a></strong></div>
           </div>
           
           <form action="/trade" method="POST" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
