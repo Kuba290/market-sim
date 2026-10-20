@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" http-equiv="refresh" content="10" />
+    <meta charset="UTF-8" http-equiv="refresh" content="60" />
     <title>Market Sim</title>
     <style>
       :root {
@@ -238,7 +238,26 @@
       <div class="card">
         <h2>Check asset</h2>
         <form action="/" method="GET">
-          <input type="text" name="ticker" placeholder="AAPL" value="{{ active_ticker }}" required />
+          <input type="text" name="ticker" list="tickers-list" placeholder="AAPL" value="{{ active_ticker }}" required />
+          <datalist id="tickers-list">
+            <option value="AAPL">Apple Inc.</option>
+            <option value="MSFT">Microsoft Corporation</option>
+            <option value="NVDA">NVIDIA Corporation</option>
+            <option value="TSLA">Tesla, Inc.</option>
+            <option value="AMZN">Amazon.com Inc.</option>
+            <option value="^GSPC">S&P 500 Index</option>
+            <option value="^IXIC">NASDAQ Composite</option>
+            <option value="BTC-USD">Bitcoin USD</option>
+            <option value="EURUSD=X">EUR / USD</option>
+            <option value="WIG20.WA">WIG20</option>
+            <option value="WIG.WA">WIG</option>
+            <option value="MWIG40.WA">mWIG40</option>
+            <option value="SWIG80.WA">sWIG80</option>
+            <option value="PKN.WA">PKN Orlen</option>
+            <option value="PKO.WA">PKO Bank Polski</option>
+            <option value="CDR.WA">CD Projekt</option>
+            <option value="ALE.WA">Allegro.eu</option>
+          </datalist>
           <button type="submit" class="check">Check</button>
         </form>
       </div>
