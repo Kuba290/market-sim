@@ -11,7 +11,7 @@ def db_init():
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT UNIQUE NOT NULL, cash FLOAT NOT NULL DEFAULT 10000)")
     cursor.execute("INSERT OR IGNORE INTO user (id, login, cash) VALUES (?, ?, ?)", (0, "user", 10000))
-    cursor.execute("CREATE TABLE IF NOT EXISTS portfolio (symbol TEXT PRIMARY KEY, quantity INTEGER)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS portfolio (symbol TEXT PRIMARY KEY, quantity INTEGER, avg_buy_price FLOAT)")
     conn.commit()
     conn.close()
 
@@ -87,6 +87,7 @@ def index():
     for row in user_data:
         symbol = row[0]
         quantity = row[1]
+        avg_buy_price = row[2]
         
         stock_data = fetch_stock_data(symbol)
         current_price = stock_data["price"]
@@ -96,14 +97,20 @@ def index():
         
         price_in_USD = current_price * rate
         item_value = quantity * price_in_USD
+
+        profit_loss_usd = (price_in_USD - avg_buy_price) * quantity
+        profit_loss_percent = ((price_in_USD - avg_buy_price) / avg_buy_price) * 100 if avg_buy_price > 0 else 0
         
         total_value += item_value
 
         portfolio_list.append({
             "symbol": symbol,
             "quantity": quantity,
+            "avg_buy_price": avg_buy_price,
             "current_price": price_in_USD,
             "total_item_value": item_value,
+            "profit_loss_usd": profit_loss_usd,
+            "profit_loss_percent": profit_loss_percent
         })
 
     return render_template('index.html', cash=balance, portfolio=portfolio_list, total_portfolio_value=total_value, active_ticker=ticker, stock_info=stock_info)
@@ -140,7 +147,8 @@ def trade():
     if action == "buy":
         if balance >= total_cost:
             update_balance(-total_cost)
-            cursor.execute("INSERT INTO portfolio (symbol, quantity) VALUES (?, ?) ON CONFLICT(symbol) DO UPDATE SET quantity = quantity + ?", (ticker, amount, amount))
+            cursor.execute("INSERT INTO portfolio (symbol, quantity, avg_buy_price) VALUES (?, ?, ?) ON CONFLICT(symbol) DO UPDATE SET avg_buy_price = ((portfolio.quantity * portfolio.avg_buy_price) + (? * ?)) / (portfolio.quantity + ?), quantity = quantity + ?", (ticker, amount, price_in_USD, amount, price_in_USD, amount, amount))
+            # new avg = ((old quantity * old price) + (bought quantity * price now)) / (old quantity + bought quantity)
             conn.commit()
 
     elif action == "sell":

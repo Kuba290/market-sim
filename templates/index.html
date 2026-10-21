@@ -43,7 +43,7 @@
 
       .container {
         width: 100%;
-        max-width: 800px;
+        max-width: 900px;
       }
 
       h1 {
@@ -197,6 +197,12 @@
       a:hover {
         text-decoration: underline;
       }
+      #profit {
+        color: var(--buy);
+      }
+      #loss {
+        color: var(--sell);
+      }
     </style>
   </head>
   <body>
@@ -223,17 +229,30 @@
             <tr>
               <th>Symbol</th>
               <th>Quantity</th>
-              <th>Price per item</th>
-              <th>Total value</th>
+              <th>Avg Buy Price</th>
+              <th>Current Price</th>
+              <th>Total Value</th>
+              <th>Profit / Loss</th>
             </tr>
           </thead>
           <tbody>
             {% for item in portfolio %}
             <tr>
-              <td><strong>{{ item.symbol }}</strong></td>
+              <td><a href="/?ticker={{ item.symbol }}"><strong>{{ item.symbol }}</strong></a></td>
               <td>{{ item.quantity }}</td>
+              <td>{{ "%.2f"|format(item.avg_buy_price) }} USD</td>
               <td>{{ "%.2f"|format(item.current_price) }} USD</td>
               <td>{{ "%.2f"|format(item.total_item_value) }} USD</td>
+              {% if item.profit_loss_usd > 0 %}
+                <td id="profit">
+              {% elif item.profit_loss_usd == 0 %}
+                <td>
+              {% else %}
+                <td id="loss">
+              {% endif %}
+                {{ "%.2f"|format(item.profit_loss_usd) }} USD 
+                ({{ "%.2f"|format(item.profit_loss_percent) }}%)
+              </td>
             </tr>
             {% endfor %}
           </tbody>
