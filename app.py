@@ -112,7 +112,12 @@ def index():
 def trade():
     ticker = request.form.get("ticker")
     action = request.form.get("action")
-    amount = int(request.form.get("amount", 1))
+    try:
+        amount = int(request.form.get("amount", 1))
+        if amount <= 0:
+            raise ValueError()
+    except ValueError:
+        return redirect(url_for("index"))
 
     stock_data = fetch_stock_data(ticker)
     if not stock_data:
@@ -160,4 +165,4 @@ def trade():
 
 if __name__ == "__main__":
     db_init()
-    app.run(host="0.0.0.0", port=2500, debug=True)
+    app.run(host="0.0.0.0", port=2500, debug=False)
