@@ -240,9 +240,9 @@
             <tr>
               <td><a href="/?ticker={{ item.symbol }}"><strong>{{ item.symbol }}</strong></a></td>
               <td>{{ item.quantity }}</td>
-              <td>{{ "%.2f"|format(item.avg_buy_price) }} USD</td>
-              <td>{{ "%.2f"|format(item.current_price) }} USD</td>
-              <td>{{ "%.2f"|format(item.total_item_value) }} USD</td>
+              <td>{{ "%.4f"|format(item.avg_buy_price) }} USD</td>
+              <td>{{ "%.4f"|format(item.current_price) }} USD</td>
+              <td>{{ "%.4f"|format(item.total_item_value) }} USD</td>
               {% if item.profit_loss_usd > 0 %}
                 <td id="profit">
               {% elif item.profit_loss_usd == 0 %}
@@ -250,8 +250,8 @@
               {% else %}
                 <td id="loss">
               {% endif %}
-                {{ "%.2f"|format(item.profit_loss_usd) }} USD 
-                ({{ "%.2f"|format(item.profit_loss_percent) }}%)
+                {{ "%.4f"|format(item.profit_loss_usd) }} USD 
+                ({{ "%.4f"|format(item.profit_loss_percent) }}%)
               </td>
             </tr>
             {% endfor %}
@@ -295,9 +295,9 @@
           <div class="stock-details">
             <div><strong>Symbol:</strong> {{ stock_info.ticker }}</div>
             <div><strong>Name:</strong> {{ stock_info.name }}</div>
-            <div><strong>Current price:</strong> {{ "%.2f"|format(stock_info.price) }} {{ stock_info.currency }}
+            <div><strong>Current price:</strong> {{ "%.4f"|format(stock_info.price) }} {{ stock_info.currency }}
               {% if stock_info.currency != "USD" %}
-                ({{ "%.2f"|format(stock_info.price_in_USD) }} USD)
+                ({{ "%.4f"|format(stock_info.price_in_USD) }} USD)
               {% endif %}
             </div>
             <div><strong><a href="https://finance.yahoo.com/quote/{{stock_info.ticker}}/">Yahoo Finance Charts</a></strong></div>
