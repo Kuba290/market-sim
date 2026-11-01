@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" http-equiv="refresh" content="60" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Market Sim</title>
     <style>
       :root {
@@ -33,7 +34,7 @@
       body {
         font-family: system-ui, "Segoe UI", Roboto, sans-serif;
         margin: 0;
-        padding: 40px 20px;
+        padding: 20px 12px;
         background-color: var(--bg-main);
         color: var(--text-main);
         display: flex;
@@ -56,7 +57,7 @@
 
       .card {
         background: var(--card-bg);
-        padding: 24px;
+        padding: 16px;
         border-radius: 12px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
         margin-bottom: 24px;
@@ -74,7 +75,7 @@
 
       .portfolio-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
         gap: 16px;
         margin-bottom: 20px;
       }
@@ -98,6 +99,13 @@
         color: var(--text-main);
       }
 
+      .table-portfolio {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 12px;
+      }
+
       input[type="text"],
       input[type="number"] {
         padding: 10px 14px;
@@ -113,6 +121,30 @@
       input[type="number"]:focus {
         border-color: var(--primary);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .search-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .search-form input[type="text"] {
+        flex: 1;
+        min-width: 150px;
+        margin-right: 0;
+      }
+
+      .trade-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+      }
+
+      .trade-form input[type="number"] {
+        width: 90px;
       }
 
       button {
@@ -155,11 +187,12 @@
         width: 100%;
         border-collapse: collapse;
         margin-top: 12px;
+        white-space: nowrap;
       }
 
       th,
       td {
-        padding: 12px 14px;
+        padding: 10px 12px;
         text-align: left;
         border-bottom: 1px solid var(--border-color);
       }
@@ -167,7 +200,7 @@
       th {
         font-weight: 600;
         color: var(--text-muted);
-        font-size: 13px;
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
@@ -224,7 +257,8 @@
 
         <h3>Owned assets</h3>
         {% if portfolio %}
-        <table>
+        <div class="table-portfolio">
+          <table>
           <thead>
             <tr>
               <th>Symbol</th>
@@ -257,6 +291,7 @@
             {% endfor %}
           </tbody>
         </table>
+        </div>
         {% else %}
         <p class="empty-portfolio">You don't have any assets.</p>
         {% endif %}
@@ -264,7 +299,7 @@
 
       <div class="card">
         <h2>Check asset</h2>
-        <form action="/" method="GET">
+        <form class="search-form" action="/" method="GET">
           <input type="text" name="ticker" list="tickers-list" placeholder="AAPL" value="{{ active_ticker }}" required />
           <datalist id="tickers-list">
             <option value="AAPL">Apple Inc.</option>
@@ -303,7 +338,7 @@
             <div><strong><a href="https://finance.yahoo.com/quote/{{stock_info.ticker}}/">Yahoo Finance Charts</a></strong></div>
           </div>
           
-          <form action="/trade" method="POST" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
+          <form class="trade-form" action="/trade" method="POST">
             <input type="hidden" name="ticker" value="{{ stock_info.ticker }}" />
             <input type="hidden" name="name" value="{{ stock_info.name }}" />
             <input type="number" name="amount" min="1" value="1" style="width: 90px;" required />
