@@ -99,13 +99,6 @@
         color: var(--text-main);
       }
 
-      .table-portfolio {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin-top: 12px;
-      }
-
       input[type="text"],
       input[type="number"] {
         padding: 10px 14px;
@@ -183,32 +176,6 @@
         filter: brightness(0.9);
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 12px;
-        white-space: nowrap;
-      }
-
-      th,
-      td {
-        padding: 10px 12px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      th {
-        font-weight: 600;
-        color: var(--text-muted);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      tr:hover td {
-        background-color: rgba(248, 250, 252, 0.5);
-      }
-
       .stock-details {
         display: flex;
         flex-direction: column;
@@ -222,18 +189,79 @@
         font-style: italic;
         margin: 0;
       }
+
       a {
         text-decoration: none;
         color: var(--text-main);
         transition: 0.3s;
       }
+
       a:hover {
         text-decoration: underline;
       }
-      #profit {
+
+      .asset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 12px;
+      }
+
+      .asset-card {
+        background: var(--bg-main);
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .asset-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+      }
+
+      .asset-body {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .asset-item span {
+        display: block;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .asset-item strong {
+        font-size: 15px;
+        color: var(--text-main);
+      }
+
+      .asset-footer {
+        margin-top: 4px;
+        padding-top: 8px;
+        border-top: 1px dashed var(--border-color);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .quantity {
+        font-size: 13px; 
+        color: var(--text-muted);
+      }
+
+      .profit {
         color: var(--buy);
       }
-      #loss {
+      .loss {
         color: var(--sell);
       }
     </style>
@@ -257,40 +285,43 @@
 
         <h3>Owned assets</h3>
         {% if portfolio %}
-        <div class="table-portfolio">
-          <table>
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Quantity</th>
-              <th>Avg Buy Price</th>
-              <th>Current Price</th>
-              <th>Total Value</th>
-              <th>Profit / Loss</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in portfolio %}
-            <tr>
-              <td><a href="/?ticker={{ item.symbol }}"><strong>{{ item.symbol }}</strong></a></td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ "%.4f"|format(item.avg_buy_price) }} USD</td>
-              <td>{{ "%.4f"|format(item.current_price) }} USD</td>
-              <td>{{ "%.4f"|format(item.total_item_value) }} USD</td>
+        <div class="asset-grid">
+          {% for item in portfolio %}
+          <div class="asset-card">
+            <div class="asset-header">
+              <a href="/?ticker={{ item.symbol }}"><strong>{{ item.symbol }}</strong></a>
+              <span class="quantity">Qty: {{ item.quantity }}</span>
+            </div>
+            
+            <div class="asset-body">
+              <div class="asset-item">
+                <span>AVG BUY PRICE</span>
+                <strong>{{ "%.4f"|format(item.avg_buy_price) }} USD</strong>
+              </div>
+              <div class="asset-item">
+                <span>CURRENT PRICE</span>
+                <strong>{{ "%.4f"|format(item.current_price) }} USD</strong>
+              </div>
+              <div class="asset-item" style="grid-column: span 2;">
+                <span>TOTAL VALUE</span>
+                <strong>{{ "%.4f"|format(item.total_item_value) }} USD</strong>
+              </div>
+            </div>
+
+            <div class="asset-footer">
+              <span style="color: var(--text-muted);">Profit / Loss:</span>
               {% if item.profit_loss_usd > 0 %}
-                <td id="profit">
+                <strong class="profit">
               {% elif item.profit_loss_usd == 0 %}
-                <td>
+                <strong>
               {% else %}
-                <td id="loss">
+                <strong class="loss">
               {% endif %}
-                {{ "%.4f"|format(item.profit_loss_usd) }} USD 
-                ({{ "%.4f"|format(item.profit_loss_percent) }}%)
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+                {{ "%.4f"|format(item.profit_loss_usd) }} USD ({{ "%.4f"|format(item.profit_loss_percent) }}%)
+              </strong>
+            </div>
+          </div>
+          {% endfor %}
         </div>
         {% else %}
         <p class="empty-portfolio">You don't have any assets.</p>
