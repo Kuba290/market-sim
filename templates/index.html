@@ -289,7 +289,7 @@
           {% for item in portfolio %}
           <div class="asset-card">
             <div class="asset-header">
-              <a href="/?ticker={{ item.symbol }}"><strong>{{ item.symbol }}</strong></a>
+              <a href="/?ticker={{ item.symbol }}"><strong>{{ item.name }} ({{ item.symbol }})</strong></a>
               <span class="quantity">Qty: {{ item.quantity }}</span>
             </div>
             

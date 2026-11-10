@@ -90,6 +90,7 @@ def index():
         avg_buy_price = row[2]
         
         stock_data = fetch_stock_data(symbol)
+        name = stock_data["name"]
         current_price = stock_data["price"]
         currency = stock_data.get("currency", "USD")
         
@@ -104,6 +105,7 @@ def index():
         total_value += item_value
 
         portfolio_list.append({
+            "name": name,
             "symbol": symbol,
             "quantity": quantity,
             "avg_buy_price": avg_buy_price,
